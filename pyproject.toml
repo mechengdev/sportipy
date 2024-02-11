@@ -1,0 +1,38 @@
+[build-system]
+requires = [
+    "setuptools >= 65.0.0"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sportipy"
+version = "0.0.1"
+description = "Library for analyzing and plotting sport activity data"
+authors = [
+    {name = "Markus Heikkinen", email="markusheikkn@gmail.com"},
+]
+requires-python = ">=3.9"
+keywords = ["strava"]
+classifiers = [
+    "Topic :: Software Development",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "folium",
+    "ezgpx"
+]
+
+[tool.setuptools]
+packages = ["sportipy"]
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"

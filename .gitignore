@@ -1,0 +1,10 @@
+venv*/
+__pycache__
+.vscode/*
+.tox/*
+*.egg-info
+
+# Artifacts
+*.gpx
+*.fit
+*.fit.gz
