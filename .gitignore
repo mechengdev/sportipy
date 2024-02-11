@@ -9,3 +9,4 @@ __pycache__
 *.gpx
 *.fit
 *.fit.gz
+data/*
