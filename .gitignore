@@ -3,6 +3,7 @@ __pycache__
 .vscode/*
 .tox/*
 *.egg-info
+*.zip
 
 # Artifacts
 *.gpx
