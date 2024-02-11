@@ -13,9 +13,15 @@ def importer():
 
 
 def test_init(importer):
-    assert importer.path == BULK_EXPORT_DIR
+    assert importer.path == str(BULK_EXPORT_DIR)
 
 
 def test_load_activities(importer):
     df = importer.load_activities()
     assert len(df) == 2
+
+
+def test_load_gpx(importer):
+    activities = importer.load_activities()
+    gpxs = importer.load_gpx(activities[activities["Activity Type"] == "Run"]["Activity ID"].values)
+    assert list(gpxs.keys()) == ["1"]
