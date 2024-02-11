@@ -24,4 +24,4 @@ def test_load_activities(importer):
 def test_load_gpx(importer):
     activities = importer.load_activities()
     gpxs = importer.load_gpx(activities[activities["Activity Type"] == "Run"]["Activity ID"].values)
-    assert list(gpxs.keys()) == ["1"]
+    assert len(gpxs) == len(activities)

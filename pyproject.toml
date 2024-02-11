@@ -22,12 +22,18 @@ classifiers = [
 ]
 
 dependencies = [
-    "folium",
-    "ezgpx"
+    "gpxpy==1.6.2",
+    "pandas",
+    "fit2gpx==0.0.7",
+    # fit2gpx fails on fitdecode warning, therefore a temporary fork is needed. https://github.com/polyvertex/fitdecode/issues/10
+    "fitdecode@git+https://github.com/mechengdev/fitdecode"
 ]
 
 [tool.setuptools]
 packages = ["sportipy"]
+
+[tool.pytest.ini_options]
+testpaths = "tests"
 
 [tool.black]
 line-length = 88

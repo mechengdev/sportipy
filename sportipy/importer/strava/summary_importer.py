@@ -4,7 +4,7 @@ from typing import Sequence
 from pathlib import Path
 
 import pandas as pd
-from sportipy.importer.utils import gpx_to_dataframe
+from sportipy.importer.utils import gpx_to_dataframe, unzip_gz, fit_to_gpx
 
 
 class StravaSummaryImporter:
@@ -28,15 +28,30 @@ class StravaSummaryImporter:
     def load_gpx(self, activity_id: str | int | Sequence[str, int]) -> dict[str, pd.DataFrame]:
         """Load GPX files of the given activities.
 
+        If given activity Filename is `.fit` or `.fit.gz`, it will be converted into GPX file
+        and added to the `activities` directory. The conversion for each activity file will happen
+        only once and in the case of multiple encountered `.fit` files, it might take some time.
+
         Returns:
-            A mapping, where keys are activity IDs and values corresponding DataFrames.
+            A mapping, where keys are activity filenames and values corresponding DataFrames.
         """
-        # TODO: Handle .fit files
-        gpx_dir = self._path / "activities"
-        # Pick matching .gpx files
-        lookup = set(list(activity_id))
-        id_to_file = {}
-        for gpx in gpx_dir.glob("*.gpx"):
-            if int(gpx.stem) in lookup:
-                id_to_file[gpx] = gpx_dir / gpx
-        return {Path(x).parts[-1].replace(".gpx", ""): df for x, df in gpx_to_dataframe(id_to_file.values()).items()}
+        activities = self.load_activities()
+        activities = activities[activities["Activity ID"].isin(list(activity_id))]
+        found_as_gpx = set()
+        for activity_file in activities["Filename"]:
+            if pd.isna(activity_file):
+                continue
+            fullpath: Path = self._path / activity_file
+            # TODO: .fit to .gpx conversion takes a long time for many files
+            if fullpath.suffixes == [".fit", ".gz"]:
+                maybe_gpx = Path(str(fullpath).replace(".fit.gz", ".gpx"))
+                if maybe_gpx.exists():
+                    found_as_gpx.add(str(maybe_gpx))
+                    continue
+                path_fit = unzip_gz(str(fullpath))
+                as_gpx = path_fit.replace(".fit", ".gpx")
+                fit_to_gpx(in_=path_fit, out_=as_gpx)
+                found_as_gpx.add(as_gpx)
+            elif fullpath.suffix == ".gpx":
+                found_as_gpx.add(str(fullpath))
+        return {x: df for x, df in gpx_to_dataframe(list(found_as_gpx)).items()}
