@@ -4,6 +4,7 @@ __pycache__
 .tox/*
 *.egg-info
 *.zip
+.pytest_cache/
 
 # Artifacts
 *.gpx
